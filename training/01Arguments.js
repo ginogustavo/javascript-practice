@@ -31,3 +31,19 @@ console.log(avgRPO(10,11,12,13,14));
 
 // .apply() function with an arbitrary array of arguments
 console.log(avgRPO.apply(null,[8,9,10,11]))
+function makePerson(first, last){
+  return {
+    first: first,
+    last : last,
+    fullName: function(){
+      return this.first + " "+this.last;
+    },
+    reversedName: function(){
+      return this.last+", "+this.first;
+    }
+  };
+}
+
+var n = makePerson("Maria", "Soto");
+console.log(n.fullName());
+console.log(n.reversedName());

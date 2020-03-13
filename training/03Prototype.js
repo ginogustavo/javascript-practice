@@ -33,3 +33,18 @@ String.prototype.reversedStr = function(){
 };
 
 console.log(myString.reversedStr());
+console.log("Hey How are you doing!".reversedStr());
+
+
+// Overwriting the toString of an object
+function Person5(first, last){
+  this.first = first;
+  this.last = last;
+}
+p5 = new Person5("Cheryl","AB");
+console.log(p5.toString());
+
+Person5.prototype.toString = function(){
+  return "<Person: "+this.first+">";
+};
+console.log(p5.toString());
