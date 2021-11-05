@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #video {
+        border: 1px solid #999;
+        width: 98%;
+        max-width: 860px;
+      }
+
+      .error {
+        color: red;
+      }
+
+      .warn {
+        color: orange;
+      }
+
+      .info {
+        color: darkgreen;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      This example shows you the contents of the selected part of your display.
+      Click the Start Capture button to begin.
+    </p>
+
+    <p>
+      <button id="start">Start Capture</button>&nbsp;<button id="stop">
+        Stop Capture
+      </button>
+    </p>
+
+    <video id="video" autoplay></video>
+    <br />
+
+    <iframe id="myFrame" src="container.html" frameborder="0" ></iframe>
+
+    <strong>Log:</strong>
+    <br />
+    <pre id="log"></pre>
+
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script> -->
+    <script>
+
+    var iframe = document.getElementById("myFrame");
+    // console.log(iframe)
+    // var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+    // console.log(innerDoc)
+    iframe.onload = function() { 
+        console.log("loaded")
+        var ifr = document.getElementById("myFrame");
+
+        //  var innerDoc = ifr.contentDocument || ifr.contentWindow.document;
+         var innerDoc = this.contentDocument || this.contentWindow.document;
+        // var mydiv = $('#myFrame').contents().find("#sharingCont")
+        // var div = innerDoc.getElementById('sharingCont');   
+         console.log(innerDoc)
+       
+    }
+    //iframe.onload()
+
+    // var div = innerDoc.getElementById('sharingCont');
+    //console.log(div)
+
+// var iframe = document.createElement('iframe');
+// iframe.name="frame1"
+// iframe.frameBorder="0"
+// iframe.onload = function() { 
+
+//     // console.log('myframe is loaded');
+    
+//     // //var mydiv = $('#myFrame').contents().find('div')
+//     // var mydiv = $('#myFrame').contents().find("#sharingCont")
+    
+//     // console.log(mydiv)
+
+//     var ifr = document.getElementById("#frame1");
+//     //var div = ifr.getElementById("sharingCont")
+//     var innerDoc = ifr.contentDocument || ifr.contentWindow.document;
+//     var div = innerDoc.getElementsByTagName("div")
+//     console.log(div)
+
+
+
+//  }; // before setting 'src'
+// iframe.src = 'container.html'; 
+// document.body.appendChild(iframe);
+
+
+//  var iframe = document.getElementById("myFrame");
+// var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+// var div = innerDoc.getElementsByTagName("sharingCont")
+// console.log(iframe.contentWindow.document)
+
+// iframe.onload = () => {
+//    console.log('iframe is completely loaded');
+// }
+
+
+// $('#myFrame').on('load', () => {
+//   console.log('iframe is completely loaded');
+// })
+
+
+// const iframe = document.querySelector('#myFrame');
+// iframe.onload = () => {
+//    console.log('iframe is completely loaded');
+//    var mydiv = $('#myFrame').contents().find('div')
+//    mydiv.hide()
+//    console.log(mydiv)
+// }
+// iframe.onload()
+
+ //var mydiv = $('#myFrame').contents().find('div')
+ //console.log(mydiv)
+ //mydiv.hide()
+//  mydiv.text("test111")
+ 
+//elmnt.innerHTML = "MADE IT"
+
+
+      const videoElem = document.getElementById("video");
+      const logElem = document.getElementById("log");
+      const startElem = document.getElementById("start");
+      const stopElem = document.getElementById("stop");
+
+      // Options for getDisplayMedia()
+      var displayMediaOptions = {
+        video: {
+          cursor: "always",
+        },
+        audio: false,
+      };
+
+      // Set event listeners for the start and stop buttons
+      startElem.addEventListener(
+        "click",
+        function (evt) {
+          startCapture();
+        },
+        false
+      );
+
+      stopElem.addEventListener(
+        "click",
+        function (evt) {
+          stopCapture();
+        },
+        false
+      );
+
+      async function startCapture() {
+        logElem.innerHTML = "";
+
+        try {
+          videoElem.srcObject = await navigator.mediaDevices.getDisplayMedia(
+            displayMediaOptions
+          );
+          dumpOptionsInfo();
+        } catch (err) {
+          console.error("Error: " + err);
+        }
+      }
+      function stopCapture(evt) {
+        let tracks = videoElem.srcObject.getTracks();
+
+        tracks.forEach((track) => track.stop());
+        videoElem.srcObject = null;
+      }
+
+      function dumpOptionsInfo() {
+        const videoTrack = videoElem.srcObject.getVideoTracks()[0];
+
+        console.info("Track settings:");
+        console.info(JSON.stringify(videoTrack.getSettings(), null, 2));
+        console.info("Track constraints:");
+        console.info(JSON.stringify(videoTrack.getConstraints(), null, 2));
+      }
+
+      console.log = (msg) => (logElem.innerHTML += `${msg}<br>`);
+      console.error = (msg) =>
+        (logElem.innerHTML += `<span class="error">${msg}</span><br>`);
+      console.warn = (msg) =>
+        (logElem.innerHTML += `<span class="warn">${msg}<span><br>`);
+      console.info = (msg) =>
+        (logElem.innerHTML += `<span class="info">${msg}</span><br>`);
+    </script>
+  </body>
+</html>
